@@ -10,4 +10,4 @@ module.exports.$or = createSelector;
 module.exports.$builder = createBuilder;
 module.exports.$build = createRule;
 
-module.exports.$extract = (number) => (...args) => args[number - 1];
+module.exports.$extract = (number, func) => (...args) => func(args[number - 1]);
