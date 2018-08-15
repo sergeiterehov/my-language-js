@@ -1,0 +1,11 @@
+{
+  "name": "my-language",
+  "version": "0.0.1",
+  "description": "Create your language!",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "Sergei Terehov",
+  "license": "MIT"
+}
