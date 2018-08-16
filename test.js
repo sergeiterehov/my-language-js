@@ -1,4 +1,4 @@
-const { $tokens, $and, $or, $builder, $build, $extract } = require("./");
+const { $tokens, $and, $or, $builder, $rule, $extract } = require("./");
 
 const src = 'name = 123';
 
@@ -45,14 +45,14 @@ const load = $and(dest, $op.sel('='), expression);
 // Builder
 
 const builder = $builder([
-    $build(sum, (a, op, b) => ['add', a, b]),
-    $build(sub, (a, op, b) => ['sub', a, b]),
-    $build(mul, (a, op, b) => ['mul', a, b]),
-    $build(div, (a, op, b) => ['div', a, b]),
-    $build(expression_inside, $extract(2)),
-    $build(expression, $extract()),
-    $build(hook, $extract(3, (name) => ['nameToVar', name])),
-    $build(load, (dest, op, expr) => ['load', dest, expr]),
+    $rule(sum, (a, op, b) => ['add', a, b]),
+    $rule(sub, (a, op, b) => ['sub', a, b]),
+    $rule(mul, (a, op, b) => ['mul', a, b]),
+    $rule(div, (a, op, b) => ['div', a, b]),
+    $rule(expression_inside, $extract(2)),
+    $rule(expression, $extract()),
+    $rule(hook, $extract(3, (name) => ['nameToVar', name])),
+    $rule(load, (dest, op, expr) => ['load', dest, expr]),
 ], skip);
 
 // Test

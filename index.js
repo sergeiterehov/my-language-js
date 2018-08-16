@@ -8,6 +8,6 @@ module.exports.$tokens = defineToken;
 module.exports.$and = createSequence;
 module.exports.$or = createSelector;
 module.exports.$builder = createBuilder;
-module.exports.$build = createRule;
+module.exports.$rule = createRule;
 
 module.exports.$extract = (number, func) => (...args) => func(args[number - 1]);
