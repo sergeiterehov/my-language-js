@@ -12,7 +12,7 @@ const $number = $tokens(/-?[0-9]+(\.[0-9]+(e-?[0-9]+)?)?/);
 const $boolean = $tokens(/true|false/);
 const $liter = $tokens($string, $number, $boolean);
 const $op = $tokens(/=|>|<|!=|!>|!<|>=|<=|==|===|!==|<<|\+|-|\*|\*\*|\\|%|&|\||&&|\|\||\^|!/);
-const $sep = $tokens(/[\.,;(){}\[\]]/);
+const $sep = $tokens(/[\.,;(){}\[\]]|{{|}}/);
 
 // Lexems
 
@@ -33,7 +33,7 @@ const sub = $and(expression, $op.sel('-'), expression);
 const mul = $and(expression, $op.sel('*'), expression);
 const div = $and(expression, $op.sel('/'), expression);
 
-const hook = $and($sep.sel('{'), $sep.sel('{'), expression, $sep.sel('}'), $sep.sel('}'));
+const hook = $and($sep.sel('{{'), expression, $sep.sel('}}'));
 
 const dest = $or(
     $id,
@@ -49,9 +49,9 @@ const builder = $builder([
     $rule(sub, (a, op, b) => ['sub', a, b]),
     $rule(mul, (a, op, b) => ['mul', a, b]),
     $rule(div, (a, op, b) => ['div', a, b]),
-    $rule(expression_inside, $extract(2)),
-    $rule(expression, $extract()),
-    $rule(hook, $extract(3, (name) => ['nameToVar', name])),
+    $rule(expression_inside, $extract(2, (expr) => expr)),
+    $rule(expression, (expr) => expr),
+    $rule(hook, $extract(2, (name) => ['nameToVar', name])),
     $rule(load, (dest, op, expr) => ['load', dest, expr]),
 ], skip);
 
