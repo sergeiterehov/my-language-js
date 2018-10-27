@@ -15,7 +15,7 @@ export class Group {
         this.children = children;
     }
 
-    public value(): string {
+    public get value(): string {
         return this.tokens.map((token) => token.value).join("");
     }
 

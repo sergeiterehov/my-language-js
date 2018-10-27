@@ -24,6 +24,7 @@ const stream = new TokenStream(tokens);
 const found = $$line.find(stream);
 
 if (found) {
-    console.log(found.getTokens());
-    console.log(found.get($$number).value());
+    console.assert(found.all($$number).map((item) => item.value).join(" ") === source, "Should be equal to source");
+} else {
+    console.assert(false, "Should return some result");
 }
