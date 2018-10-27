@@ -1,8 +1,9 @@
 import { Token } from "../lexer/Token";
 import { TokenDefinition } from "../lexer/TokenDefinition";
 import { Rule } from "./Rule";
+import { Group } from "./Group";
 
-export class RuleDefinition {
+export class GroupDefinition {
     private rule: Rule | (() => Rule);
     private done: boolean;
 
@@ -11,8 +12,18 @@ export class RuleDefinition {
         this.done = false;
     }
 
-    public find(tokens: Token[]): Token[] {
-        return this.getRule().find(tokens);
+    public find(tokens: Token[]): Group | void {
+        const found = this.getRule().find(tokens);
+
+        if (! found) {
+            return undefined;
+        }
+
+        return new Group(
+            this,
+            found.filter((item) => item instanceof Token) as Token[],
+            found.filter((item) => item instanceof Group) as Group[],
+        );
     }
 
     public getTokenDefinitions(): TokenDefinition[] {

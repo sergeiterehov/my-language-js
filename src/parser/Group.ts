@@ -1,8 +1,8 @@
 import { Token } from "../lexer/Token";
-import { RuleDefinition } from "./RuleDefinition";
+import { GroupDefinition } from "./GroupDefinition";
 import { TokenDefinition } from "../lexer/TokenDefinition";
 
-export type GroupDefinition = RuleDefinition | TokenDefinition;
+export type GroupDefinition = GroupDefinition | TokenDefinition;
 
 export class Group {
     private definition: GroupDefinition;

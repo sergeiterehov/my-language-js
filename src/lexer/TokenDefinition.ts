@@ -7,10 +7,10 @@ export class TokenDefinition {
         this.rule = rule;
     }
 
-    public find(source: string): string {
+    public find(source: string): string | void {
         const found = this.rule.exec(source);
 
-        if (found.length === 0) {
+        if (! found) {
             return undefined;
         }
 
