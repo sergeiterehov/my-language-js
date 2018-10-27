@@ -36,6 +36,8 @@ export class Rule {
     }
 
     public find(tokens: Token[]): Array<Group | Token> | void {
+        // new RuleExecutor(this, tokens);
+        
         const match = this.scan(tokens);
 
         if (! this.validate(match)) {
@@ -66,6 +68,10 @@ export class Rule {
     }
 
     private findStructure(tokens: Token[]): Array<void | Group | Token | Array<Group | Token>> {
+        if (this.predicates.length > tokens.length) {
+            return [];
+        }
+
         return this.predicates.map((predicate, i) => {
             if (predicate instanceof TokenDefinition) {
                 if (tokens[i].definition === predicate) {
@@ -74,9 +80,9 @@ export class Rule {
 
                 return undefined;
             } else if (predicate instanceof Rule) {
-                return predicate.find(tokens.slice(i));
+                return predicate.find(tokens);
             } else if (predicate instanceof GroupDefinition) {
-                return predicate.find(tokens.slice(i));
+                return predicate.find(tokens);
             }
         });
     }
@@ -86,7 +92,7 @@ export class Rule {
             const result = [];
 
             while (true) {
-                const found = this.findStructure(tokens);
+                const found = this.findStructure(tokens.slice(result.length));
 
                 if (found.length === 0) {
                     break;

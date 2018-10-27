@@ -2,7 +2,7 @@ import { TokenDefinition } from "../src/lexer/TokenDefinition";
 import { Lexer } from "../src/lexer/Lexer";
 
 const $number = new TokenDefinition(/\d+/);
-const $skip = new TokenDefinition(/\s\t\n/);
+const $skip = new TokenDefinition(/[\s\t\n]+/s);
 
 const lexer = new Lexer([$number], $skip);
 

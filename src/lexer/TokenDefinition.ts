@@ -10,10 +10,10 @@ export class TokenDefinition {
     public find(source: string): string | void {
         const found = this.rule.exec(source);
 
-        if (! found) {
+        if (! found || found.index > 0) {
             return undefined;
         }
 
-        return found[0];
+        return source.substr(0, found[0].length);
     }
 }
