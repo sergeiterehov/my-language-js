@@ -6,10 +6,10 @@ import { TokenStream } from "../lexer/TokenStream";
 
 export class RuleDriver {
     private operation: RuleOperation;
-    private predicates: RulePredicatesType;
+    private predicates: RulePredicatesType[];
     private stream: TokenStream;
 
-    constructor(operation: RuleOperation, predicates: RulePredicatesType, stream: TokenStream) {
+    constructor(operation: RuleOperation, predicates: RulePredicatesType[], stream: TokenStream) {
         this.operation = operation;
         this.predicates = predicates;
         this.stream = stream;
@@ -22,7 +22,8 @@ export class RuleDriver {
         // Try to validate predicates
         const structureRaw = this.findRawStructure();
 
-        // console.log(backup, this.operation, !! structureRaw); // Find log
+        // Log
+        // console.log(backup, this.operation, !! structureRaw);
 
         if (! structureRaw) {
             // Nothing found, restore pointer
@@ -54,9 +55,17 @@ export class RuleDriver {
     }
 
     private findRaw() {
+        if (this.stream.eof) {
+            return;
+        }
+
         return this.predicates.map((predicate) => {
             if (predicate instanceof TokenDefinition) {
-                const token = this.stream.read();
+                if (this.stream.eof) {
+                    return;
+                }
+
+                const token = this.stream.next;
 
                 if (token && predicate === token.definition) {
                     return token;
@@ -72,11 +81,19 @@ export class RuleDriver {
     private and() {
         const structure = this.findRaw();
 
+        if (! structure) {
+            return;
+        }
+
         return structure.findIndex((item) => ! item) !== -1 ? undefined : structure;
     }
 
     private mayBe() {
-        const structure = this.findRaw();
+        const structure = this.and();
+
+        if (! structure) {
+            return [];
+        }
 
         return structure;
     }

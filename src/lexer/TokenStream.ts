@@ -17,6 +17,10 @@ export class TokenStream {
         this.pointer = value;
     }
 
+    public get eof(): boolean {
+        return this.pointer >= this.list.length;
+    }
+
     public get(): Token[] {
         return this.list.slice(this.pointer);
     }
@@ -29,7 +33,7 @@ export class TokenStream {
         return new TokenStream(this.list, this.pointer);
     }
 
-    public read(): Token {
+    public get next(): Token {
         return this.list[this.pointer++];
     }
 }

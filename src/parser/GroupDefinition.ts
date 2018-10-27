@@ -6,11 +6,12 @@ import { TokenStream } from "../lexer/TokenStream";
 
 export class GroupDefinition {
     private rule: Rule | (() => Rule);
-    private done: boolean;
+
+    private closure: boolean = true;
+    private lockGetTokenDefinitions: boolean = false;
 
     constructor(rule: Rule | (() => Rule)) {
         this.rule = rule;
-        this.done = false;
     }
 
     public find(stream: TokenStream): Group | void {
@@ -38,24 +39,31 @@ export class GroupDefinition {
     }
 
     public getTokenDefinitions(): TokenDefinition[] {
-        return this.getRule().getTokenDefinitions();
+        if (this.lockGetTokenDefinitions) {
+            return [];
+        }
+
+        this.lockGetTokenDefinitions = true;
+
+        const result = this.getRule().getTokenDefinitions();
+
+        this.lockGetTokenDefinitions = false;
+
+        return result.reduce<TokenDefinition[]>(
+            (list, item) => list.indexOf(item) !== -1 ? list : [...list, item],
+            [],
+        );
     }
 
     private getRule(): Rule {
-        this.prepare();
+        if (this.closure) {
+            if (this.rule instanceof Function) {
+                this.rule = this.rule();
+            }
+
+            this.closure = false;
+        }
 
         return this.rule as Rule;
-    }
-
-    private prepare() {
-        if (this.done) {
-            return;
-        }
-
-        if (this.rule instanceof Function) {
-            this.rule = this.rule();
-        }
-
-        this.done = true;
     }
 }

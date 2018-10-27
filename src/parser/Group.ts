@@ -44,4 +44,16 @@ export class Group {
     public getTokens(): Token[] {
         return [...this.tokens];
     }
+
+    public log(level: number = 0): string {
+        let str = "> ";
+
+        for (let i = 0; i < level; i++) {
+            str = " " + str;
+        }
+
+        return str += this.children.length > 0
+            ? this.children.map((group) => group.log(level + 1)).join("\n")
+            : `[${this.value}]`;
+    }
 }
