@@ -2,6 +2,7 @@ import { Token } from "../lexer/Token";
 import { TokenDefinition } from "../lexer/TokenDefinition";
 import { Rule } from "./Rule";
 import { Group } from "./Group";
+import { TokenStream } from "../lexer/TokenStream";
 
 export class GroupDefinition {
     private rule: Rule | (() => Rule);
@@ -12,8 +13,15 @@ export class GroupDefinition {
         this.done = false;
     }
 
-    public find(tokens: Token[]): Group | void {
-        const found = this.getRule().find(tokens);
+    public find(stream: TokenStream): Group | void {
+        const found = this.getRule().find(stream);
+
+        /**
+         * Array<Token | Group> | void
+         *
+         * If we have found set, then create Group.
+         * Group can be created here only!
+         */
 
         if (! found) {
             return undefined;
@@ -21,8 +29,11 @@ export class GroupDefinition {
 
         return new Group(
             this,
-            found.filter((item) => item instanceof Token) as Token[],
-            found.filter((item) => item instanceof Group) as Group[],
+            found.reduce<Token[]>((list, item) => [
+                ...list,
+                ...(item instanceof Token ? [item] : item.getTokens()),
+            ], []),
+            found.filter<Group>((item): item is Group => item instanceof Group),
         );
     }
 

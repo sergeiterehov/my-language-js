@@ -2,108 +2,38 @@ import { TokenDefinition } from "../lexer/TokenDefinition";
 import { Token } from "../lexer/Token";
 import { GroupDefinition } from "./GroupDefinition";
 import { Group } from "./Group";
+import { RuleDriver } from "./RuleDriver";
+import { TokenStream } from "../lexer/TokenStream";
 
 export enum RuleOperation {
-    And,
-    Or,
-    Any,
-    MayBe,
+    And = "AND",
+    Or = "OR",
+    Any = "ANY",
+    MayBe = "MAYBE",
 }
 
-export type RuleArgsType = Array<Rule | TokenDefinition | GroupDefinition>;
+export type RulePredicatesType = Array<Rule | TokenDefinition | GroupDefinition>;
+export type StructureType = Array<Group | Token>;
 
 export class Rule {
     private operation: RuleOperation;
-    private predicates: RuleArgsType;
+    private predicates: RulePredicatesType;
 
-    constructor(operation: RuleOperation, predicates: RuleArgsType) {
+    constructor(operation: RuleOperation, predicates: RulePredicatesType) {
         this.operation = operation;
         this.predicates = predicates;
     }
 
     public getTokenDefinitions(): TokenDefinition[] {
-        const definitions: TokenDefinition[] = [];
-
-        this.predicates.forEach((item) => {
-            if (item instanceof TokenDefinition) {
-                definitions.push(item);
-            } else {
-                definitions.push(...item.getTokenDefinitions());
-            }
-        });
-
-        return definitions;
+        return this.predicates.reduce<TokenDefinition[]>((list, item) => [
+            ...list,
+            ...(item instanceof TokenDefinition ? [item] : item.getTokenDefinitions()),
+        ], []);
     }
 
-    public find(tokens: Token[]): Array<Group | Token> | void {
-        // new RuleExecutor(this, tokens);
-        
-        const match = this.scan(tokens);
+    public find(stream: TokenStream): StructureType | void {
+        const driver = new RuleDriver(this.operation, this.predicates, stream);
 
-        if (! this.validate(match)) {
-            return undefined;
-        }
-
-        const structure = match.filter((item) => !! item) as Array<Group | Token | Array<Group | Token>>;
-
-        return structure.reduce<Array<Group | Token>>((list, item) => {
-            if (item instanceof Array) {
-                list.push(...item);
-            } else {
-                list.push(item);
-            }
-
-            return list;
-        }, []);
-    }
-
-    protected validate<T>(match: T[]): boolean {
-        return (
-            false
-            || this.operation === RuleOperation.And && ! match.find((item) => ! item)
-            || this.operation === RuleOperation.Or && !! match.find((item) => !! item)
-            || this.operation === RuleOperation.Any
-            || this.operation === RuleOperation.MayBe
-        );
-    }
-
-    private findStructure(tokens: Token[]): Array<void | Group | Token | Array<Group | Token>> {
-        if (this.predicates.length > tokens.length) {
-            return [];
-        }
-
-        return this.predicates.map((predicate, i) => {
-            if (predicate instanceof TokenDefinition) {
-                if (tokens[i].definition === predicate) {
-                    return tokens[i];
-                }
-
-                return undefined;
-            } else if (predicate instanceof Rule) {
-                return predicate.find(tokens);
-            } else if (predicate instanceof GroupDefinition) {
-                return predicate.find(tokens);
-            }
-        });
-    }
-
-    private scan(tokens: Token[]) {
-        if (this.operation === RuleOperation.Any) {
-            const result = [];
-
-            while (true) {
-                const found = this.findStructure(tokens.slice(result.length));
-
-                if (found.length === 0) {
-                    break;
-                }
-
-                result.push(...found);
-            }
-
-            return result;
-        }
-
-        return this.findStructure(tokens);
+        return driver.find();
     }
 }

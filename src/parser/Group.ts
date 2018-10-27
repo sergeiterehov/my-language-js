@@ -44,4 +44,8 @@ export class Group {
 
         return result;
     }
+
+    public getTokens(): Token[] {
+        return [...this.tokens];
+    }
 }
