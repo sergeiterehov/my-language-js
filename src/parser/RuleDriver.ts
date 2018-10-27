@@ -22,6 +22,8 @@ export class RuleDriver {
         // Try to validate predicates
         const structureRaw = this.findRawStructure();
 
+        // console.log(backup, this.operation, !! structureRaw); // Find log
+
         if (! structureRaw) {
             // Nothing found, restore pointer
             this.stream.position = backup;
@@ -45,6 +47,7 @@ export class RuleDriver {
             case RuleOperation.And: return this.and();
             case RuleOperation.Or: return this.or();
             case RuleOperation.MayBe: return this.mayBe();
+            case RuleOperation.Any: return this.any();
         }
 
         throw new Error("Unknow operation of rule");
@@ -72,6 +75,12 @@ export class RuleDriver {
         return structure.findIndex((item) => ! item) !== -1 ? undefined : structure;
     }
 
+    private mayBe() {
+        const structure = this.findRaw();
+
+        return structure;
+    }
+
     private or() {
         const structure = this.predicates.reduce<StructureType | void>(
             (result, predicate) => result || new RuleDriver(RuleOperation.And, [predicate], this.stream).find(),
@@ -81,9 +90,13 @@ export class RuleDriver {
         return structure;
     }
 
-    private mayBe() {
-        const structure = this.findRaw();
+    private any(): StructureType[] {
+        const structure = new RuleDriver(RuleOperation.And, [...this.predicates], this.stream).find();
 
-        return structure;
+        if (structure) {
+            return [structure, ...this.any()];
+        }
+
+        return [];
     }
 }

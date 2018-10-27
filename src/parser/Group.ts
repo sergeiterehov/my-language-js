@@ -16,11 +16,7 @@ export class Group {
     }
 
     public value(): string {
-        if (this.tokens.length !== 1) {
-            throw new Error("More than 1 token in group");
-        }
-
-        return this.tokens[0].value;
+        return this.tokens.map((token) => token.value).join("");
     }
 
     public is(definition: GroupDefinition): boolean {
