@@ -15,24 +15,24 @@ export class LexerDriver {
         const tokens: Token[] = [];
 
         while (source.length > 0) {
-            let found = false;
+            const found = [];
 
             for (const definition of this.definitions) {
                 const fragment = definition.find(source);
 
-                if (! fragment) {
-                    continue;
+                if (fragment) {
+                    found.push(new Token(definition, fragment));
                 }
-
-                tokens.push(new Token(definition, fragment));
-                source = source.substring(fragment.length);
-
-                found = true;
             }
 
-            if (! found) {
+            if (found.length === 0) {
                 throw new Error(`Unknown lexem: ${source.substr(0, 30)}...`);
             }
+
+            const token = found.sort((a, b) => b.value.length - a.value.length)[0];
+
+            tokens.push(token);
+            source = source.substring(token.value.length);
         }
 
         return tokens;

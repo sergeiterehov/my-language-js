@@ -28,14 +28,7 @@ export class GroupDefinition {
             return undefined;
         }
 
-        return new Group(
-            this,
-            found.reduce<Token[]>((list, item) => [
-                ...list,
-                ...(item instanceof Token ? [item] : item.getTokens()),
-            ], []),
-            found.filter<Group>((item): item is Group => item instanceof Group),
-        );
+        return new Group(this, found);
     }
 
     public getTokenDefinitions(): TokenDefinition[] {
