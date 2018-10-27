@@ -4,8 +4,8 @@ export class Token {
     public definition: TokenDefinition;
     public value: string;
 
-    constructor(definition: TokenDefinition, value: string) {
-        this.definition = definition;
+    constructor(type: TokenDefinition, value: string) {
+        this.definition = type;
         this.value = value;
     }
 }

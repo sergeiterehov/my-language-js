@@ -1,7 +1,7 @@
-import { TokenDefinition } from "./TokenDefinition";
 import { Token } from "./Token";
+import { TokenDefinition } from "./TokenDefinition";
 
-export class Tokenizer {
+export class LexerDriver {
     private definitions: TokenDefinition[];
     private source: string;
 
@@ -11,7 +11,6 @@ export class Tokenizer {
     }
 
     public parse(): Token[] {
-        // todo
-        return [];
+        return []; // TODO
     }
 }

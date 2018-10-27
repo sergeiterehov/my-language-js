@@ -1,11 +1,24 @@
 {
   "name": "my-language",
-  "version": "0.0.1",
-  "description": "Create your language!",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "ts-node test/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergeiterehov/my-language-js.git"
   },
   "author": "Sergei Terehov",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sergeiterehov/my-language-js/issues"
+  },
+  "homepage": "https://github.com/sergeiterehov/my-language-js#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.3"
+  }
 }
