@@ -35,11 +35,11 @@ const calculator = (current: Group): number => {
     const args = current.getChildren().map(calculator);
     const ops = current.getTokens().map((token) => token.definition);
 
-    return args.reduce((y, x, i) => {
+    return args.reduce((a, b, i) => {
         switch (current.type) {
-            case expression: return ops[i] === $plus ? y + x : y - x;
-            case expressionTimes: return ops[i] === $times ? y * x : y / x;
-            case expressionPower: return y ** x;
+            case expression: return ops[i] === $plus ? a + b : a - b;
+            case expressionTimes: return ops[i] === $times ? a * b : a / b;
+            case expressionPower: return a ** b;
             default: return 0;
         }
     }, args.shift() || 0);
