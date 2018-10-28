@@ -13,7 +13,8 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout 10000 -r ts-node/register src/**/*.spec.ts"
+    "build": "tsc && npm test",
+    "test": "mocha --timeout 10000 ./lib/**/*.spec.js"
   },
   "repository": {
     "type": "git",

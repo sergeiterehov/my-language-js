@@ -1,0 +1,15 @@
+import { TokenDefinition, TokenDefinitionRule } from "./lexer/TokenDefinition";
+import { GroupDefinition } from "./parser/GroupDefinition";
+import { Rule, RulePredicatesClosureType } from "./parser/Rule";
+import { Parser } from "./parser/Parser";
+import { Group } from "./parser/Group";
+import { Processor } from "./processor/Processor";
+export declare type ProcessorHandler<T> = (group: Group) => T;
+export declare function fragment(rule: TokenDefinitionRule): TokenDefinition;
+export declare function group(...predicates: RulePredicatesClosureType[]): GroupDefinition;
+export declare function and(...predicates: RulePredicatesClosureType[]): Rule;
+export declare function or(...predicates: RulePredicatesClosureType[]): Rule;
+export declare function maybe(...predicates: RulePredicatesClosureType[]): Rule;
+export declare function any(...predicates: RulePredicatesClosureType[]): Rule;
+export declare function parser(skip: TokenDefinition, ...definitions: GroupDefinition[]): Parser;
+export declare function processor<T>(handler: ProcessorHandler<T>, parserDefinition: Parser): Processor<T>;
