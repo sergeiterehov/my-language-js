@@ -2,7 +2,39 @@
 
 # Create your own language!
 
+> TypeScript ready!
+
+This is smth like ANTLR...
+
+## Install
+
+```sh
+npm i my-language
+```
+
+## How to import?
+
+### TypeScript
+
+```typescript
+import { fragment, group, or, any, and, maybe, parser, processor, ProcessorHandler } from "my-language/src";
+```
+
+### JavaScript
+
+```js
+const { fragment, group, or, any, and, maybe, parser, processor } = require("my-language");
+```
+
+or
+
+```js
+import { fragment, group, or, any, and, maybe, parser, processor } from "my-language";
+```
+
 ## Example: calculator implementation
+
+If you wanna use JS, just remove types from this example.
 
 Gramma:
 
@@ -77,3 +109,5 @@ Results:
 ```
 [ 220 ]
 ```
+
+> Have a good work!
