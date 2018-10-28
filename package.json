@@ -1,7 +1,16 @@
 {
   "name": "my-language",
   "version": "1.0.0",
-  "description": "",
+  "description": "Create your own language or parser!",
+  "keywords": [
+    "parser",
+    "antlr",
+    "language",
+    "compiler",
+    "typescript",
+    "lexer",
+    "token"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "mocha --timeout 10000 -r ts-node/register src/**/*.spec.ts"
