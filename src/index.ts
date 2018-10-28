@@ -22,7 +22,7 @@ export function or(...predicates: RulePredicatesClosureType[]): Rule {
 }
 
 export function maybe(...predicates: RulePredicatesClosureType[]): Rule {
-    return new Rule(RuleOperation.MayBe, predicates);
+    return new Rule(RuleOperation.Maybe, predicates);
 }
 
 export function any(...predicates: RulePredicatesClosureType[]): Rule {

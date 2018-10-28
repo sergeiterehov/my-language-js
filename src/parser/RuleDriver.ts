@@ -20,12 +20,12 @@ export class RuleDriver {
         const backup = this.stream.position;
 
         // Try to validate predicates
-        const structureRaw = this.findRawStructure();
+        const superStructure = this.findSuperStructure();
 
         // Log
         // console.log(backup, this.operation, !! structureRaw);
 
-        if (! structureRaw) {
+        if (! superStructure) {
             // Nothing found, restore pointer
             this.stream.position = backup;
 
@@ -33,7 +33,7 @@ export class RuleDriver {
         }
 
         // Create flat structure
-        const structure = structureRaw.reduce<StructureType>((list, item) => [
+        const structure = superStructure.reduce<StructureType>((list, item) => [
             ...list,
             ...(item instanceof Array ? item.filter<Token | Group>(
                 (sub): sub is Token | Group => !! sub) : item ? [item] : []
@@ -43,59 +43,53 @@ export class RuleDriver {
         return structure;
     }
 
-    private findRawStructure() {
+    private findSuperStructure() {
         switch (this.operation) {
             case RuleOperation.And: return this.and();
             case RuleOperation.Or: return this.or();
-            case RuleOperation.MayBe: return this.mayBe();
+            case RuleOperation.Maybe: return this.maybe();
             case RuleOperation.Any: return this.any();
         }
 
         throw new Error("Unknow operation of rule");
     }
 
-    private findRaw() {
-        if (this.stream.eof) {
-            return;
+    private findPredicates() {
+        if (! this.stream.eof) {
+            return this.predicates.map((predicate) => {
+                if (predicate instanceof TokenDefinition) {
+                    if (! this.stream.eof) {
+                        const token = this.stream.next;
+
+                        if (token && predicate === token.definition) {
+                            return token;
+                        }
+                    }
+                } else if (predicate instanceof Rule) {
+                    return predicate.find(this.stream);
+                } else {
+                    return predicate.find(this.stream);
+                }
+            });
         }
-
-        return this.predicates.map((predicate) => {
-            if (predicate instanceof TokenDefinition) {
-                if (this.stream.eof) {
-                    return;
-                }
-
-                const token = this.stream.next;
-
-                if (token && predicate === token.definition) {
-                    return token;
-                }
-            } else if (predicate instanceof Rule) {
-                return predicate.find(this.stream);
-            } else {
-                return predicate.find(this.stream);
-            }
-        });
     }
 
     private and() {
-        const structure = this.findRaw();
+        const structure = this.findPredicates();
 
-        if (! structure) {
-            return;
+        if (structure) {
+            return structure.findIndex((item) => ! item) !== -1 ? undefined : structure;
         }
-
-        return structure.findIndex((item) => ! item) !== -1 ? undefined : structure;
     }
 
-    private mayBe() {
-        const structure = this.and();
+    private maybe() {
+        const structure = new RuleDriver(RuleOperation.And, [...this.predicates], this.stream).find();
 
-        if (! structure) {
-            return [];
+        if (structure) {
+            return [structure];
         }
 
-        return structure;
+        return [];
     }
 
     private or() {

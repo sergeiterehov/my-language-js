@@ -9,7 +9,7 @@ export enum RuleOperation {
     And = "AND",
     Or = "OR",
     Any = "ANY",
-    MayBe = "MAYBE",
+    Maybe = "MAYBE",
 }
 
 export type RulePredicatesType = Rule | TokenDefinition | GroupDefinition;

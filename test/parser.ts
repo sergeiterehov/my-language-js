@@ -11,7 +11,7 @@ const $minus = new TokenDefinition(/\-/);
 const $skip = new TokenDefinition(/[\s\t\n]+/s);
 
 const $$sign = new GroupDefinition(new Rule(RuleOperation.Or, [$plus, $minus]));
-const $$number = new GroupDefinition(new Rule(RuleOperation.And, [new Rule(RuleOperation.MayBe, [$$sign]), $number]));
+const $$number = new GroupDefinition(new Rule(RuleOperation.And, [new Rule(RuleOperation.Maybe, [$$sign]), $number]));
 
 const $$line = new GroupDefinition(new Rule(RuleOperation.Any, [$$number]));
 
