@@ -3,16 +3,16 @@ import { Group } from "../parser/Group";
 
 export class Processor<T> {
     private parser: Parser;
-    private handle: (group: Group) => T;
+    private handler: (group: Group) => T;
 
-    constructor(handle: (group: Group) => T, parser: Parser) {
+    constructor(handler: (group: Group) => T, parser: Parser) {
         this.parser = parser;
-        this.handle = handle;
+        this.handler = handler;
     }
 
     public process(source: string): T[] {
         const root = this.parser.parse(source);
-        const results = root.getChildren().map(this.handle);
+        const results = root.getChildren().map(this.handler);
 
         return results;
     }

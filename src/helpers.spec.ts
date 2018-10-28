@@ -1,5 +1,5 @@
 import "mocha";
-import { fragment, group, or, any, and, maybe, parser, processor } from "../src";
+import { fragment, group, or, any, and, maybe, parser, processor, ProcessorHandler } from "../src";
 import { Group } from "../src/parser/Group";
 
 describe("Helpers and shortcuts", () => {
@@ -29,7 +29,7 @@ describe("Helpers and shortcuts", () => {
 
         // Processor
 
-        const calculator = (current: Group): number => {
+        const calculator: ProcessorHandler<number> = (current) => {
             switch (current.type) {
                 case atom: return current.has($number) ? Number(current.value) : calculator(current.get(expression));
                 case atomSigned: return calculator(current.get(atom)) * (current.has($minus) ? -1 : 1);

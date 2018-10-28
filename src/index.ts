@@ -5,6 +5,8 @@ import { Parser } from "./parser/Parser";
 import { Group } from "./parser/Group";
 import { Processor } from "./processor/Processor";
 
+export type ProcessorHandler<T> = (group: Group) => T;
+
 export function fragment(rule: TokenDefinitionRule): TokenDefinition {
     return new TokenDefinition(rule);
 }
@@ -33,6 +35,6 @@ export function parser(skip: TokenDefinition, ...definitions: GroupDefinition[])
     return new Parser(definitions, skip);
 }
 
-export function processor<T>(handle: (group: Group) => T, parserDefinition: Parser): Processor<T> {
-    return new Processor(handle, parserDefinition);
+export function processor<T>(handler: ProcessorHandler<T>, parserDefinition: Parser): Processor<T> {
+    return new Processor(handler, parserDefinition);
 }
