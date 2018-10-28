@@ -27,13 +27,13 @@ const calculatorParser = parser($skip, expression);
 // Processor
 
 const calculator = (current: Group): number => {
-    const args = current.getChildren().map(calculator);
-    const ops = current.getTokens().map((token) => token.definition);
-
     switch (current.type) {
         case atom: return current.has($number) ? Number(current.value) : calculator(current.get(expression));
         case atomSigned: return calculator(current.get(atom)) * (current.has($minus) ? -1 : 1);
     }
+
+    const args = current.getChildren().map(calculator);
+    const ops = current.getTokens().map((token) => token.definition);
 
     return args.reduce((y, x, i) => {
         switch (current.type) {
