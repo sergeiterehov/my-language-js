@@ -17,7 +17,7 @@ npm i my-language
 ### TypeScript
 
 ```typescript
-import { fragment, group, or, any, and, maybe, parser, processor, ProcessorHandler } from "my-language/src";
+import { fragment, group, or, any, and, maybe, parser, processor, ProcessorHandler } from "my-language";
 ```
 
 ### JavaScript
