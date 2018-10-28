@@ -1,10 +1,9 @@
-import { Token } from "../lexer/Token";
 import { TokenDefinition } from "../lexer/TokenDefinition";
-import { Rule } from "./Rule";
+import { Rule, ITokenDefinitionProvider } from "./Rule";
 import { Group } from "./Group";
 import { TokenStream } from "../lexer/TokenStream";
 
-export class GroupDefinition {
+export class GroupDefinition implements ITokenDefinitionProvider {
     private rule: Rule | (() => Rule);
 
     private closure: boolean = true;

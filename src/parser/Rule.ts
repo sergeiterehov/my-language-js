@@ -5,6 +5,10 @@ import { Group } from "./Group";
 import { RuleDriver } from "./RuleDriver";
 import { TokenStream } from "../lexer/TokenStream";
 
+export interface ITokenDefinitionProvider {
+    getTokenDefinitions(): TokenDefinition[];
+}
+
 export enum RuleOperation {
     And = "AND",
     Or = "OR",
@@ -16,7 +20,7 @@ export type RulePredicatesType = Rule | TokenDefinition | GroupDefinition;
 export type RulePredicatesClosureType = RulePredicatesType | (() => RulePredicatesType);
 export type StructureType = Array<Group | Token>;
 
-export class Rule {
+export class Rule implements ITokenDefinitionProvider {
     private operation: RuleOperation;
     private predicates: RulePredicatesClosureType[];
 
